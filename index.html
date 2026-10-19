@@ -28,10 +28,10 @@ header{padding:16px 16px 4px}h1{margin:0;font-size:21px}header p{margin:4px 0 0;
 .tab img{width:26px;height:26px;border-radius:50%;object-fit:cover}.tab.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
 .tab i{font-style:normal;font-size:11px;opacity:.8}
 #list{padding:6px 16px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}@media(min-width:760px){#list{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.c{min-width:0;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;display:grid;gap:8px}
+.c{min-width:0;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
 .t{display:flex;gap:10px;align-items:center}.t img{width:44px;height:44px;border-radius:12px;object-fit:cover}
-.t div{flex:1;min-width:0}.t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.t small{color:var(--mu);font-size:12px}
-.pill{font-size:12px;font-weight:bold;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.t div{flex:1;min-width:0;overflow:hidden}.t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.t small{display:block;color:var(--mu);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{flex:none;font-size:12px;font-weight:bold;padding:4px 10px;border-radius:999px;white-space:nowrap}
 .p-ok{background:#16a34a22;color:var(--ok)}.p-wn{background:#f59e0b22;color:var(--wn)}.p-no{background:#dc262622;color:var(--no)}.p-fr{background:#6d4ee822;color:var(--ac)}
 .f{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;border-top:1px solid var(--bd);padding-top:6px}
 .f span{color:var(--mu);font-size:11px;display:block}.f>div{min-width:0}.f b{font-weight:600;word-break:break-all}
@@ -133,9 +133,13 @@ function msgEntrega(o){var d=dd(o),g=o.fn?new Date(o.fn+"T12:00:00"):null,gar=g?
 function msgRec(o){var d=dd(o);return "Hola "+o.nm+"! 👋 Te recordamos que tu "+o.pl+" "+(d!=null&&d<0?"venció":"vence")+" el "+fd(o.fn)+".\n\n📧 Correo: "+o.em+"\n👥 Perfil: "+(String(o.pf).toLowerCase()=="cc"?"CC (cuenta completa)":o.pf)+"\n\n¿Quieres renovarlo? 🎬"}
 function msgCambio(o){var f=function(x){return x?fd(iso(x)):"—"};
  return "🔄 Cambio de cuenta "+o.pl.toUpperCase()+" ✅\n👤 Cliente: "+o.nm+"\n\nTu cuenta ha sido cambiada. Estos son tus nuevos datos 👇\n\n📧 DATOS\n• Correo: "+o.em+"\n• Perfil: "+o.pf+(o.pin?" | PIN: "+o.pin:"")+"\n• Contraseña: "+o.pw+"\n\n📅 Vigencia: 🟢 "+(o.ct?fd(o.ct):f(today()))+" – 🔴 "+fd(o.fn)+"\n\n📋 CONDICIONES\n❌ Max. 1 dispositivo (2 o más = Bloqueo sin reembolso)\n❌ No modificar datos ni cerrar sesión\n\n📌 Si no hay perfil, crea uno con tu nombre y coloca PIN"}
+var MIN_VENTA=25,AE={};
+function AEc(){AE={};DATA.forEach(function(x){if(free(x))return;var d=dd(x);if(d==null||d<0)return;var k=x.pl+"|"+x.em;if(AE[k]==null||d<AE[k])AE[k]=d})}
+function dv(o){var v=AE[o.pl+"|"+o.em];return v==null?null:v}
+function vis(o){if(!free(o))return true;var v=dv(o);return v==null||v>=MIN_VENTA}
 function draw0(){
- var all=DATA,c={ok:0,soon:0,late:0,free:0};all.forEach(function(o){c[grp(o)]++});
- document.getElementById("sub").textContent=all.length+" perfiles · "+(all.length-c.free)+" con cliente";
+ AEc();var all=DATA.filter(vis);if(E&&!all.some(function(o){return o.em==E&&(F=="Todos"||o.pl==F)}))E="";var base=all.filter(function(o){return(F=="Todos"||o.pl==F)&&(!E||o.em==E)}),c={ok:0,soon:0,late:0,free:0};base.forEach(function(o){c[grp(o)]++});
+ document.getElementById("sub").textContent=(F=="Todos"?"":F+" · ")+base.length+" perfiles · "+(base.length-c.free)+" con cliente";
  document.getElementById("kp").innerHTML=[["ok","g","Al día"],["soon","y","Por vencer"],["late","r","Vencidos"],["free","b","Libres"]].map(function(k){return '<div class="k '+k[1]+(S==k[0]?" on":"")+'" onclick="S=(S==\''+k[0]+'\'?\'\':\''+k[0]+'\');draw()"><b>'+c[k[0]]+'</b><span>'+k[2]+'</span></div>'}).join("");
  var pls=["Todos"];all.forEach(function(o){if(pls.indexOf(o.pl)<0)pls.push(o.pl)});
  document.getElementById("tabs").innerHTML=pls.map(function(p){var n=p=="Todos"?all.length:all.filter(function(o){return o.pl==p}).length;return '<button class="tab'+(F==p?" on":"")+'" onclick="F=\''+p.replace(/'/g,"")+'\';draw()">'+(p=="Todos"?"":'<img src="'+lg(p)+'" alt="">')+esc(p)+' <i>'+n+'</i></button>'}).join("");
@@ -148,7 +152,7 @@ function draw0(){
  K.forEach(function(k){var g=G[k];g.P.sort(function(a,b){return String(a.pf).localeCompare(String(b.pf),undefined,{numeric:true})});g.m=Math.min.apply(null,g.P.map(function(o){var d=dd(o);return d==null?999:d}))});
  K.sort(function(a,b){var x=G[a],y=G[b];if(E||t)return x.em==y.em?(x.pl<y.pl?-1:1):(x.em<y.em?-1:1);return x.m-y.m});
  var prow=function(o){var ix=DATA.indexOf(o),k=cls(o);
-  if(free(o))return '<div class="pw"><div class="pr fr" onclick="openProf('+ix+')"><div class="pn">'+esc(o.pf)+'</div><div class="pi"><b>Perfil libre</b><small>'+(o.pin?'PIN '+esc(o.pin):'Sin PIN')+'</small></div><button class="cp" onclick="event.stopPropagation();openProf('+ix+')">Asignar</button></div></div>';
+  if(free(o))return '<div class="pw"><div class="pr fr" onclick="openProf('+ix+')"><div class="pn">'+esc(o.pf)+'</div><div class="pi"><b>Perfil libre</b><small>'+(o.pin?'PIN '+esc(o.pin):'Sin PIN')+(dv(o)!=null?' · '+dv(o)+' días':'')+'</small></div><button class="cp" onclick="event.stopPropagation();openProf('+ix+')">Asignar</button></div></div>';
   var w=function(m){return 'https://wa.me/'+o.ph+'?text='+encodeURIComponent(m)};
   return '<div class="pw"><div class="pr" onclick="this.parentNode.classList.toggle(\'op\')"><div class="pn">'+esc(o.pf)+'</div><div class="pi"><b>'+esc(o.nm)+'</b><small>'+(o.pin?'PIN '+esc(o.pin)+' · ':'')+'vence '+fd(o.fn)+(o.ph?' · '+esc(o.ph):'')+'</small></div><span class="pill '+k[0]+'">'+k[1]+'</span></div>'+
   '<div class="pa"><div class="bt"><a class="w" target="_blank" href="'+w(msgEntrega(o))+'">📦 Entregar</a><a class="g" target="_blank" href="'+w(msgRec(o))+'">⏰ Recordar</a><a class="g" target="_blank" href="'+w(msgCambio(o))+'">🔁 Cambio</a></div><div class="bt"><button class="g2" onclick="renew('+ix+')">🔄 Renovar</button><button class="g2" onclick="openProf('+ix+')">✏️ Editar</button></div></div></div>'};
