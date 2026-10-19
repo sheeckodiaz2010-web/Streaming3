@@ -135,7 +135,8 @@ function msgCambio(o){var f=function(x){return x?fd(iso(x)):"—"};
  return "🔄 Cambio de cuenta "+o.pl.toUpperCase()+" ✅\n👤 Cliente: "+o.nm+"\n\nTu cuenta ha sido cambiada. Estos son tus nuevos datos 👇\n\n📧 DATOS\n• Correo: "+o.em+"\n• Perfil: "+o.pf+(o.pin?" | PIN: "+o.pin:"")+"\n• Contraseña: "+o.pw+"\n\n📅 Vigencia: 🟢 "+(o.ct?fd(o.ct):f(today()))+" – 🔴 "+fd(o.fn)+"\n\n📋 CONDICIONES\n❌ Max. 1 dispositivo (2 o más = Bloqueo sin reembolso)\n❌ No modificar datos ni cerrar sesión\n\n📌 Si no hay perfil, crea uno con tu nombre y coloca PIN"}
 var MIN_VENTA=25,AE={};
 function AEc(){AE={};DATA.forEach(function(x){if(free(x))return;var d=dd(x);if(d==null||d<0)return;var k=x.pl+"|"+x.em;if(AE[k]==null||d<AE[k])AE[k]=d})}
-function dv(o){var v=AE[o.pl+"|"+o.em];return v==null?null:v}
+var REGLA=["Amazon Prime","VIX+","Paramount+"];
+function dv(o){if(REGLA.indexOf(o.pl)<0)return null;var v=AE[o.pl+"|"+o.em];return v==null?null:v}
 function vis(o){if(!free(o))return true;var v=dv(o);return v==null||v>=MIN_VENTA}
 function draw0(){
  AEc();var all=DATA.filter(vis);if(E&&!all.some(function(o){return o.em==E&&(F=="Todos"||o.pl==F)}))E="";var base=all.filter(function(o){return(F=="Todos"||o.pl==F)&&(!E||o.em==E)}),c={ok:0,soon:0,late:0,free:0};base.forEach(function(o){c[grp(o)]++});
