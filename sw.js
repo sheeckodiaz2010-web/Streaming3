@@ -1,23 +1,38 @@
-/* Panel Inventario · caché segura para conexiones inestables */
-const CACHE_NAME = "panel-v6";
+/* Panel Inventario · v7: apertura rápida con datos móviles y fallback offline */
+const CACHE_NAME = "panel-v7";
 const SHELL_URL = "./index.html";
+const ROOT_URL = "./";
 const OPTIONAL_ASSETS = ["./manifest.json", "./icon-192.png", "./icon-512.png"];
+
+async function saveShell(response) {
+  if (!response || !response.ok) return;
+  const cache = await caches.open(CACHE_NAME);
+  await cache.put(SHELL_URL, response.clone());
+  await cache.put(ROOT_URL, response.clone());
+}
+
+async function fetchWithTimeout(request, ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(request, { signal: controller.signal, cache: "no-store" });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE_NAME);
-    // La app principal es el único recurso obligatorio para instalar la caché.
-    const response = await fetch(SHELL_URL, { cache: "reload" });
+    // El HTML es obligatorio; los iconos y el manifest son complementarios.
+    const response = await fetchWithTimeout(SHELL_URL, 12000);
     if (!response.ok) throw new Error("No se pudo descargar index.html");
-    await cache.put(SHELL_URL, response.clone());
-    await cache.put("./", response.clone());
-    // Los iconos/manifesto son complementarios: un icono ausente no debe
-    // impedir que la aplicación se pueda abrir con datos móviles.
+    await saveShell(response);
     await Promise.all(OPTIONAL_ASSETS.map(async asset => {
       try {
-        const item = await fetch(asset, { cache: "reload" });
+        const item = await fetchWithTimeout(asset, 5000);
         if (item.ok) await cache.put(asset, item.clone());
-      } catch (_) { /* se descargará cuando vuelva la conexión */ }
+      } catch (_) {}
     }));
     await self.skipWaiting();
   })());
@@ -38,43 +53,45 @@ self.addEventListener("fetch", event => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
-  // Las llamadas a Google Apps Script y otros servicios externos no se interceptan.
+  // Nunca interceptar Google Apps Script, WhatsApp ni otros servicios externos.
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === "navigate") {
     event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = (await cache.match(request)) ||
+                     (await cache.match(SHELL_URL)) ||
+                     (await cache.match(ROOT_URL));
+
       try {
-        const response = await fetch(request);
+        // En redes móviles lentas, no dejar la pantalla esperando indefinidamente.
+        const response = await fetchWithTimeout(request, cached ? 2800 : 12000);
         if (response && response.ok) {
-          const cache = await caches.open(CACHE_NAME);
-          await cache.put(SHELL_URL, response.clone());
-          await cache.put("./", response.clone());
+          await saveShell(response.clone());
         }
         return response;
       } catch (_) {
-        return (await caches.match(request)) ||
-          (await caches.match(SHELL_URL)) ||
-          new Response("Sin conexión. Abre la aplicación cuando recuperes internet.", {
-            status: 503,
-            headers: { "Content-Type": "text/plain; charset=utf-8" }
-          });
+        if (cached) return cached;
+        return new Response(
+          "No se pudo conectar. Comprueba tus datos móviles o abre el panel con internet.",
+          { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } }
+        );
       }
     })());
     return;
   }
 
-  // Para iconos y archivos estáticos: primero caché, luego red y actualización.
+  // Recursos locales: caché primero para abrir rápido; red como respaldo.
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(request);
-    const network = fetch(request).then(async response => {
+    if (cached) return cached;
+    try {
+      const response = await fetchWithTimeout(request, 8000);
       if (response && response.ok) await cache.put(request, response.clone());
       return response;
-    }).catch(() => null);
-    if (cached) {
-      event.waitUntil(network);
-      return cached;
+    } catch (_) {
+      return new Response("Recurso no disponible", { status: 504 });
     }
-    return (await network) || new Response("Recurso no disponible sin conexión", { status: 504 });
   })());
 });
