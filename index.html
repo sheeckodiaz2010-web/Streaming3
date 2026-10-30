@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark">
 <title>Panel</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0b1120" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3f6fc" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0b1530" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Panel">
@@ -13,8 +13,8 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#f1f5f9;--card:#fff;--tx:#0f172a;--mu:#64748b;--ac:#2563eb;--ac2:#3b82f6;--ok:#16a34a;--wn:#d97706;--no:#dc2626;--bd:#e2e8f0}
-@media (prefers-color-scheme:dark){:root{--bg:#0b1120;--card:#121b2f;--tx:#e8eefc;--mu:#8b9ac0;--bd:#1f2b47;--ac:#3b82f6;--ac2:#60a5fa;--wn:#f59e0b}}
+--bg:#f3f6fc;--card:#fff;--tx:#101b38;--mu:#64718b;--ac:#172b58;--ac2:#29b9eb;--ok:#168653;--wn:#c47a12;--no:#c83c4a;--bd:#e0e6f0}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1530;--card:#121f3d;--tx:#edf3ff;--mu:#9aa9c8;--bd:#26375b;--ac:#263f7b;--ac2:#36c2f1;--wn:#f0b34a}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Arial,Helvetica,sans-serif;padding-bottom:40px}
 header{padding:16px 16px 4px}h1{margin:0;font-size:21px}header p{margin:4px 0 0;color:var(--mu);font-size:13px}
 .exp{margin:8px 16px;padding:8px 12px;border-radius:12px;background:#f59e0b22;border:1px solid #f59e0b66;color:var(--wn);font-size:12px}
@@ -107,7 +107,7 @@ button:focus-visible,a:focus-visible,.k:focus-visible,.tab:focus-visible{outline
 .cp{min-height:36px}.tab{min-height:38px}
 .k{border-radius:16px}
 #q[type=search]{-webkit-appearance:none;appearance:none}
-<style>/* pro */
+/* pro */
 body{padding-top:4px}header{padding:18px 16px 6px}
 h1{display:flex;align-items:center;gap:10px;font-size:24px}h1 em{font-style:normal;color:var(--mu);font-weight:600}
 .lgm{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(37,99,235,.7)}
@@ -126,8 +126,27 @@ header p{font-weight:500}
 .fab{border-radius:18px;background:var(--ac);box-shadow:0 10px 24px -8px rgba(37,99,235,.7)}
 #mb{border-radius:24px 24px 0 0}
 @media(prefers-color-scheme:dark){.c,.k{box-shadow:none}}
+
+/* Panel PRO: identidad visual y estado de conexión */
+.lgm{width:42px;height:42px;border-radius:12px;overflow:hidden;background:transparent;box-shadow:none;flex:none}
+.lgm img{display:block;width:42px;height:42px;object-fit:cover;border-radius:12px}
+header{padding:14px 16px 8px}
+h1{gap:9px;color:var(--tx)}
+h1 em{font-size:.78em;letter-spacing:-.01em}
+.netbar{display:inline-flex;align-items:center;gap:7px;margin-top:8px;padding:6px 9px;border:1px solid var(--bd);border-radius:999px;background:var(--card);color:var(--mu);font-size:11px;font-weight:650;max-width:100%}
+.netdot{width:7px;height:7px;border-radius:50%;background:#d49a32;flex:none}
+.netbar.good .netdot{background:var(--ok)}
+.netbar.off .netdot,.netbar.warn .netdot{background:var(--no)}
+.netbar button{border:0;border-left:1px solid var(--bd);padding:0 0 0 8px;background:transparent;color:var(--ac);font-size:11px;font-weight:800}
+.k{background:var(--card)}
+.tab.on{background:linear-gradient(120deg,var(--ac),var(--ac2));color:#fff}
+.fab{background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:18px}
+.pw-actions{display:flex;gap:5px;flex:none}
+.secret{letter-spacing:.12em}
+@media(max-width:380px){.kp{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.k{padding:10px 6px}.k b{font-size:20px}.er{gap:6px}.avb{padding:11px 10px}}
+@media(prefers-reduced-motion:reduce){.netbar,.netbar *{transition:none!important}}
 </style></head><body>
-<header><h1><span class="lgm"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></span>Panel <em>Inventario</em></h1><p id="sub"></p></header>
+<header><h1><span class="lgm"><img src="icon-192.png" alt="P"></span>Panel <em>Inventario</em></h1><p id="sub"></p><div id="netbar" class="netbar" role="status" aria-live="polite"><span class="netdot"></span>Comprobando conexión…</div></header>
 <div class="kp" id="kp"></div>
 <input id="q" type="search" aria-label="Buscar" placeholder="🔍 Buscar cliente, teléfono o correo...">
 <div class="er"><button class="avb" id="av" aria-label="Ver todos los correos con sus perfiles">📋 Todos</button><select id="em" aria-label="Filtrar por correo"></select></div>
@@ -201,7 +220,7 @@ function draw0(){
   if(cc&&late&&!act)pk=["p-no","Todos vencidos"];else if(cc&&!late&&!act)pk=["p-fr","Disponible"];
   return '<div class="c" data-k="'+esc(k)+'"><div class="t"><img src="'+lg(g.pl)+'" alt=""><div><b>'+esc(g.pl)+'</b><small>'+esc(g.em)+'</small></div><span class="pill '+pk[0]+'">'+pk[1]+'</span></div>'+
   '<div class="f"><div><span>Correo</span><b>'+esc(g.em)+'</b></div><button class="cp" onclick="cpy(this,'+i0+',\'em\')">Copiar</button></div>'+
-  '<div class="f"><div><span>Contraseña</span><b>'+esc(g.pw||"—")+'</b></div><button class="cp" onclick="cpy(this,'+i0+',\'pw\')">Copiar</button></div>'+
+  '<div class="f"><div><span>Contraseña</span><b class="secret">••••••••</b></div><div class="pw-actions"><button class="cp" onclick="togglePass(this,'+i0+')">Ver</button><button class="cp" onclick="cpy(this,'+i0+',\'pw\')">Copiar</button></div></div>'+
   '<div class="pls">'+g.P.map(prow).join("")+'</div>'+
   (cc&&late&&!act?'<button class="sec" onclick="relAcc('+i0+')">🧹 Sacar a todos y liberar</button>':'')+
   (cc&&late&&act?'<div class="nt">Aún hay clientes activos · libre en ~'+mx+' días</div>':'')+'</div>'};
@@ -212,6 +231,7 @@ function draw0(){
  document.getElementById("av").className="avb"+(AV?" on":"");
  document.getElementById("list").innerHTML=K.length?K.map(AV?acomp:acard).join(""):'<div class="em">'+(DATA.length?'Sin resultados':'Aún no hay datos.<br>Toca ＋ → ⬆️ Importar respaldo, o conecta la ☁️ Nube.')+'</div>'}
 function avGo(ix){var o=DATA[ix];F=o.pl;E=o.em;AV=false;draw();window.scrollTo(0,0)}
+function togglePass(b,i){var row=b.parentNode.parentNode,el=row.querySelector(".secret"),shown=b.getAttribute("data-shown")==="1";if(!el)return;if(shown){el.textContent="••••••••";b.textContent="Ver";b.setAttribute("data-shown","0")}else{el.textContent=DATA[i].pw||"—";b.textContent="Ocultar";b.setAttribute("data-shown","1")}}
 function cpy(b,i,k){var v=DATA[i][k]||"";(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).catch(function(){var a=document.createElement("textarea");a.value=v;document.body.appendChild(a);a.select();try{document.execCommand("copy")}catch(e){}a.remove()});b.textContent="¡Copiado!";b.className="cp ok";setTimeout(function(){b.textContent="Copiar";b.className="cp"},1200)}
 /* ---- ventanas ---- */
 function mo(h){var o=document.getElementById("mo"),b=document.getElementById("mb");clearTimeout(_mt);b.innerHTML=h;b.scrollTop=0;if(o.style.display!="flex"){o.style.display="flex";void o.offsetWidth}document.body.classList.add("lk");o.classList.add("sh");MODAL=null}
@@ -275,15 +295,16 @@ function accMsgs(ix){var o=DATA[ix],L=DATA.filter(function(x){return x.em==o.em&
  mo('<h2>📩 Enviar datos nuevos</h2><p>'+esc(o.pl)+' · '+esc(o.em)+' · toca cada cliente para mandarle el mensaje de cambio.</p>'+(L.length?L.map(function(x){return '<div class="ctr"><div><b>'+esc(x.nm)+'</b><br><span>'+esc(x.pf)+(x.pin?' · PIN '+esc(x.pin):'')+'</span></div><a target="_blank" style="background:#25d366;color:#fff;border-radius:10px;padding:10px 12px;text-decoration:none;font-size:13px;white-space:nowrap" onclick="this.style.opacity=.4" href="https://wa.me/'+x.ph+'?text='+encodeURIComponent(msgCambio(x))+'">🔁 Enviar</a></div>'}).join(""):'<p>Esta cuenta no tiene clientes asignados.</p>')+'<button class="sec" onclick="cm()">Cerrar</button>')}
 var CFG={u:"",k:""},TS=0,CS="",_pt;
 function cfgLoad(){try{var c=JSON.parse(localStorage.getItem("panel_cfg")||"{}");CFG.u=c.u||"";CFG.k=c.k||"";TS=+localStorage.getItem("panel_ts")||0}catch(e){}}
-function cloudPush(){if(!CFG.u)return;clearTimeout(_pt);_pt=setTimeout(function(){fetch(CFG.u,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({clave:CFG.k,ts:TS,data:DATA,contactos:CT})}).then(function(r){return r.json()}).then(function(j){if(j.ok){CS="ok"}else{CS="err";toast("⚠️ Nube: "+(j.error||"error"))}}).catch(function(){CS="err";toast("⚠️ Sin conexión: se guardó solo en este celular")})},800)}
-function cloudSync(show){if(!CFG.u)return;fetch(CFG.u+"?accion=datos&clave="+encodeURIComponent(CFG.k)).then(function(r){return r.json()}).then(function(j){if(!j.ok){CS="err";toast("⚠️ Nube: "+(j.error||"error"));return}
- if(!j.data){if(!TS)TS=Date.now();try{localStorage.setItem("panel_ts",TS)}catch(e){}cloudPush();CS="ok";if(show)toast("☁️ Conectado: datos subidos")}
- else if(j.ts>TS){DATA=j.data;CT=j.contactos||CT;TS=j.ts;try{localStorage.setItem(KEY0,JSON.stringify(DATA));localStorage.setItem(KEYC,JSON.stringify(CT));localStorage.setItem("panel_ts",TS)}catch(e){}CS="ok";if(MODAL)cm();draw();toast("☁️ Datos al día")}
- else if(TS>j.ts){cloudPush();CS="ok";if(show)toast("☁️ Conectado")}
- else{CS="ok";if(show)toast("☁️ Conectado")}}).catch(function(){CS="err";toast("⚠️ Sin conexión con la nube")})}
+function netUI(){var e=document.getElementById("netbar");if(!e)return;var online=navigator.onLine!==false,label,cls="";if(!online){label="Sin internet · cambios guardados en este celular";cls="off"}else if(!CFG.u){label="En línea · nube sin configurar"}else if(CS==="ok"){label="Nube sincronizada";cls="good"}else if(CS==="err"){label="Nube pendiente · toca para reintentar";cls="warn"}else{label="Conectado · verificando nube"}e.className="netbar "+cls;e.innerHTML='<span class="netdot"></span><span>'+label+'</span>'+(CFG.u&&online?'<button type="button" onclick="cloudSync(true)">Sincronizar</button>':"")}
+function cloudPush(){if(!CFG.u){netUI();return}clearTimeout(_pt);CS="pending";netUI();_pt=setTimeout(function(){fetch(CFG.u,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({clave:CFG.k,ts:TS,data:DATA,contactos:CT})}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(j){if(j.ok){CS="ok"}else{CS="err";toast("⚠️ Nube: "+(j.error||"error"))}netUI()}).catch(function(){CS="err";netUI();toast("⚠️ No se pudo sincronizar. Tus cambios siguen guardados en este celular")})},800)}
+function cloudSync(show){if(!CFG.u){netUI();return}if(navigator.onLine===false){CS="err";netUI();if(show)toast("📵 Sin internet. Se sincronizará al recuperar conexión");return}CS="pending";netUI();fetch(CFG.u+"?accion=datos&clave="+encodeURIComponent(CFG.k)).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(function(j){if(!j.ok){CS="err";netUI();if(show)toast("⚠️ Nube: "+(j.error||"error"));return}
+ if(!j.data){if(!TS)TS=Date.now();try{localStorage.setItem("panel_ts",TS)}catch(e){}cloudPush();CS="ok";netUI();if(show)toast("☁️ Conectado: datos subidos")}
+ else if(j.ts>TS){DATA=j.data;CT=j.contactos||CT;TS=j.ts;try{localStorage.setItem(KEY0,JSON.stringify(DATA));localStorage.setItem(KEYC,JSON.stringify(CT));localStorage.setItem("panel_ts",TS)}catch(e){}CS="ok";netUI();if(MODAL)cm();draw();if(show)toast("☁️ Datos al día")}
+ else if(TS>j.ts){cloudPush();CS="ok";netUI();if(show)toast("☁️ Conectado")}
+ else{CS="ok";netUI();if(show)toast("☁️ Conectado")}}).catch(function(){CS="err";netUI();if(show)toast("⚠️ Sin conexión con la nube")})}
 function openCfg(){mo('<h2>☁️ Conectar nube</h2><p>Pega la URL de tu Apps Script y la clave que pusiste en el código.</p><label>URL</label><input id="g_u" value="'+esc(CFG.u)+'" placeholder="https://script.google.com/macros/s/.../exec" autocapitalize="off"><label>Clave</label><input id="g_k" value="'+esc(CFG.k)+'" autocapitalize="off"><button class="pri" onclick="cfgSave()">Guardar y sincronizar</button>'+(CFG.u?'<button class="sec" onclick="cfgOff()">Desconectar</button>':'')+'<button class="sec" onclick="cm()">Cerrar</button>')}
 function cfgSave(){CFG.u=V("g_u");CFG.k=V("g_k");try{localStorage.setItem("panel_cfg",JSON.stringify(CFG))}catch(e){}cm();toast("☁️ Sincronizando...");cloudSync(true)}
-function cfgOff(){CFG={u:"",k:""};try{localStorage.removeItem("panel_cfg")}catch(e){}cm();toast("Nube desconectada")}
+function cfgOff(){CFG={u:"",k:""};CS="";try{localStorage.removeItem("panel_cfg")}catch(e){}cm();netUI();toast("Nube desconectada")}
 function entMo(ix){var o=DATA[ix];mo('<h2>✅ Cliente asignado</h2><p>'+esc(o.nm)+' · '+esc(o.pl)+' · '+esc(o.pf)+' · vence '+fd(o.fn)+'</p><a class="pri" style="display:block;box-sizing:border-box;text-align:center;text-decoration:none" target="_blank" href="https://wa.me/'+o.ph+'?text='+encodeURIComponent(msgEntrega(o))+'">📦 Entregar por WhatsApp</a><button class="sec" onclick="cm()">Listo</button>')}
 /* menú + */
 function openMenu(){mo('<h2>¿Qué quieres hacer?</h2><button class="pri" onclick="openAcc()">➕ Agregar cuenta</button><button class="sec" onclick="openAddP()">➕ Agregar perfil a una cuenta</button><button class="sec" onclick="instalar()">📲 Instalar como app</button><button class="sec" onclick="openCfg()">☁️ Nube: '+(CFG.u?"conectada":"sin conectar")+'</button><button class="sec" onclick="openCT()">📒 Contactos (números)</button><button class="sec" onclick="backup()">⬇️ Descargar respaldo</button><label class="sec" style="display:block;text-align:center">⬆️ Importar respaldo<input type="file" accept=".json,application/json" style="display:none" onchange="restore(this)"></label><button class="dng" id="b_rs" onclick="sure(this,resetAll)">↺ Volver a los datos originales</button><button class="sec" onclick="cm()">Cerrar</button>');var b=document.getElementById("b_rs");b._t=b.textContent}
@@ -329,8 +350,11 @@ window.addEventListener("scroll",uiSave,{passive:true});
 window.addEventListener("pagehide",uiSave0);
 document.addEventListener("visibilitychange",function(){if(document.hidden){uiSave0();return}var n=iso(today());if(n!=_day){_day=n;draw()}});
 document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href^="https://wa.me/?"]');if(a){e.preventDefault();e.stopPropagation();toast("📵 Este cliente no tiene número. Edítalo y agrégalo")}},true);
-var E="",AV=false;cfgLoad();load();loadCT();uiLoad();document.getElementById("q").oninput=function(){clearTimeout(_dq);_dq=setTimeout(draw,90)};document.getElementById("av").onclick=function(){AV=!AV;draw()};document.getElementById("em").onchange=function(){E=this.value;draw()};draw();uiRestore();document.getElementById("mb").addEventListener("input",uiSave);document.getElementById("mb").addEventListener("change",uiSave);cloudSync();
+var E="",AV=false;cfgLoad();load();loadCT();uiLoad();document.getElementById("q").oninput=function(){clearTimeout(_dq);_dq=setTimeout(draw,90)};document.getElementById("av").onclick=function(){AV=!AV;draw()};document.getElementById("em").onchange=function(){E=this.value;draw()};draw();uiRestore();document.getElementById("mb").addEventListener("input",uiSave);document.getElementById("mb").addEventListener("change",uiSave);netUI();cloudSync();
 var DIP=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();DIP=e});
+window.addEventListener("online",function(){netUI();if(CFG.u)cloudSync(true)});
+window.addEventListener("offline",netUI);
+document.addEventListener("visibilitychange",function(){if(!document.hidden&&navigator.onLine&&CFG.u)cloudSync(false)});
 function instalar(){if(DIP){DIP.prompt();DIP=null;return}var st=window.matchMedia("(display-mode: standalone)").matches||navigator.standalone;mo('<h2>📲 Instalar como app</h2>'+(st?'<p>Ya la estás usando como app ✅</p>':'<p><b>iPhone (Safari):</b> toca Compartir → Agregar a pantalla de inicio.</p><p><b>Android (Chrome):</b> menú ⋮ → Instalar app.</p>')+'<button class="sec" onclick="cm()">Cerrar</button>')}
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
 </script></body></html>
