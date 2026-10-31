@@ -1,60 +1,19 @@
-// Service Worker - DIGAR POS
-// Red primero (siempre intenta traer la versión más nueva) y, si no hay señal
-// o tarda demasiado, abre la copia guardada para que funcione sin conexión.
-// (los datos reales de tus ventas viven en localStorage, no aquí)
-const CACHE_NAME = 'digar-pos-v25';
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-maskable-192.png',
-  './icon-maskable-512.png'
-];
-const ESPERA_RED_MS = 3000;
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) =>
-      // cache: 'reload' se salta el caché del navegador y baja archivos frescos
-      Promise.all(ASSETS.map((url) =>
-        fetch(new Request(url, { cache: 'reload' }))
-          .then((resp) => { if (resp.ok) return cache.put(url, resp); })
-          .catch(() => {})
-      ))
-    )
-  );
+// Service worker del Panel: permite abrirlo sin internet.
+// Si cambias index.html, sube el número de versión (panel-v4, v5...) para que se actualice en los celulares.
+const V = "panel-v5";
+const ARCHIVOS = ["./", "index.html", "manifest.json", "icon-192.png", "icon-512.png"];
+self.addEventListener("install", e => {
+  e.waitUntil(caches.open(V).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting()));
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+self.addEventListener("activate", e => {
+  e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== V).map(x => caches.delete(x)))).then(() => self.clients.claim()));
 });
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-
-  event.respondWith((async () => {
-    const cache = await caches.open(CACHE_NAME);
-    try {
-      const controlador = new AbortController();
-      const timer = setTimeout(() => controlador.abort(), ESPERA_RED_MS);
-      const resp = await fetch(event.request, { cache: 'no-cache', signal: controlador.signal });
-      clearTimeout(timer);
-      if (resp && resp.ok) cache.put(event.request, resp.clone());
-      return resp;
-    } catch (e) {
-      const guardado = await cache.match(event.request, { ignoreSearch: true });
-      if (guardado) return guardado;
-      return (await cache.match('./index.html')) || Response.error();
-    }
-  })());
+self.addEventListener("fetch", e => {
+  const r = e.request;
+  // Solo archivos del propio panel; las llamadas a Google (nube) no se tocan
+  if (r.method !== "GET" || new URL(r.url).origin !== location.origin) return;
+  e.respondWith(
+    fetch(r).then(res => { const cp = res.clone(); caches.open(V).then(c => c.put(r, cp)); return res; })
+      .catch(() => caches.match(r).then(m => m || caches.match("index.html")))
+  );
 });
