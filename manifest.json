@@ -1,27 +1,39 @@
 {
-  "name": "Panel de Inventario",
-  "short_name": "Panel",
-  "description": "Control de cuentas, perfiles, clientes y renovaciones",
-  "lang": "es",
+  "name": "DIGAR POS",
+  "short_name": "DIGAR POS",
+  "description": "Sistema POS DIGAR - Clientes Comerciales",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
-  "background_color": "#0b1530",
-  "theme_color": "#172b58",
+  "background_color": "#0f8080",
+  "theme_color": "#0f8080",
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "./icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "lang": "es",
+  "scope": "./",
+  "id": "./index.html"
 }
